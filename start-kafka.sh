@@ -1,7 +1,11 @@
 #!/bin/bash -e
 
+set -x
+
 # Allow specific kafka versions to perform any unique bootstrap operations
 OVERRIDE_FILE="/opt/overrides/${KAFKA_VERSION}.sh"
+# OVERRIDE_FILE=/opt/overrides/2.6.0.sh
+
 if [[ -x "$OVERRIDE_FILE" ]]; then
     echo "Executing override file $OVERRIDE_FILE"
     eval "$OVERRIDE_FILE"
@@ -11,15 +15,17 @@ fi
 ORIG_IFS=$IFS
 
 if [[ -z "$KAFKA_ZOOKEEPER_CONNECT" ]]; then
+ # [[ -z zookeeper:2181 ]]
     echo "ERROR: missing mandatory config: KAFKA_ZOOKEEPER_CONNECT"
     exit 1
 fi
 
 if [[ -z "$KAFKA_PORT" ]]; then
     export KAFKA_PORT=9092
+    # export KAFKA_PORT=9092
 fi
 
-create-topics.sh &
+# create-topics.sh &
 unset KAFKA_CREATE_TOPICS
 
 if [[ -z "$KAFKA_ADVERTISED_PORT" && \
@@ -28,6 +34,7 @@ if [[ -z "$KAFKA_ADVERTISED_PORT" && \
   -S /var/run/docker.sock ]]; then
     KAFKA_ADVERTISED_PORT=$(docker port "$(hostname)" $KAFKA_PORT | sed -r 's/.*:(.*)/\1/g')
     export KAFKA_ADVERTISED_PORT
+    # KAFKA_ADVERTISED_PORT=32771
 fi
 
 if [[ -z "$KAFKA_BROKER_ID" ]]; then
@@ -39,9 +46,11 @@ if [[ -z "$KAFKA_BROKER_ID" ]]; then
         export KAFKA_BROKER_ID=-1
     fi
 fi
+# KAFKA_BROKER_ID=-1
 
 if [[ -z "$KAFKA_LOG_DIRS" ]]; then
     export KAFKA_LOG_DIRS="/kafka/kafka-logs-$HOSTNAME"
+    # KAFKA_LOG_DIRS=/kafka/kafka-logs-c6f539c6e2d2
 fi
 
 if [[ -n "$KAFKA_HEAP_OPTS" ]]; then

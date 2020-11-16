@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 if [[ -z "$KAFKA_CREATE_TOPICS" ]]; then
     exit 0
 fi
