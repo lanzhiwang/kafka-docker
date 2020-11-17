@@ -1,5 +1,6 @@
 #!/bin/bash
 set -x
+# -z 判断字符串是否为空
 if [[ -z "$KAFKA_CREATE_TOPICS" ]]; then
     exit 0
 fi
@@ -53,5 +54,13 @@ IFS="${KAFKA_CREATE_TOPICS_SEPARATOR-,}"; for topicToCreate in $KAFKA_CREATE_TOP
 		${KAFKA_0_10_OPTS} &"
     eval "${COMMAND}"
 done
+
+# JMX_PORT='' /opt/kafka/bin/kafka-topics.sh --create
+# --zookeeper zookeeper:2181
+# --topic name
+# --partitions partitions
+# --replication-factor replicas
+# -config=cleanup.policy=cleanup.policy
+# --if-not-exists &
 
 wait

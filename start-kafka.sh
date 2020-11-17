@@ -6,6 +6,7 @@ set -x
 OVERRIDE_FILE="/opt/overrides/${KAFKA_VERSION}.sh"
 # OVERRIDE_FILE=/opt/overrides/2.6.0.sh
 
+# -x 判断文件是否存在且可以执行
 if [[ -x "$OVERRIDE_FILE" ]]; then
     echo "Executing override file $OVERRIDE_FILE"
     eval "$OVERRIDE_FILE"
@@ -20,12 +21,13 @@ if [[ -z "$KAFKA_ZOOKEEPER_CONNECT" ]]; then
     exit 1
 fi
 
+# -z 判断字符串是否为空
 if [[ -z "$KAFKA_PORT" ]]; then
     export KAFKA_PORT=9092
     # export KAFKA_PORT=9092
 fi
 
-# create-topics.sh &
+create-topics.sh &
 unset KAFKA_CREATE_TOPICS
 
 if [[ -z "$KAFKA_ADVERTISED_PORT" && \
@@ -53,6 +55,7 @@ if [[ -z "$KAFKA_LOG_DIRS" ]]; then
     # KAFKA_LOG_DIRS=/kafka/kafka-logs-c6f539c6e2d2
 fi
 
+# -Xms1G -Xmx1G
 if [[ -n "$KAFKA_HEAP_OPTS" ]]; then
     sed -r -i 's/(export KAFKA_HEAP_OPTS)="(.*)"/\1="'"$KAFKA_HEAP_OPTS"'"/g' "$KAFKA_HOME/bin/kafka-server-start.sh"
     unset KAFKA_HEAP_OPTS
